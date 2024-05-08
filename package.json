@@ -6,24 +6,29 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start-node": "ts-node node-back/src/index.ts",
-    "start-react-native": "cd react-native-front && yarn start",
+    "start-react-native": "cd hotel-upgrade-native-front && yarn start",
+    "start-react": "cd hotel-upgrade-react-front && yarn start",
     "migrate": "knex migrate:latest"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "helmet": "^7.1.0",
     "knex": "^3.1.0",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "react-router-dom": "^6.23.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
-    "@types/node": "^20.12.10",
+    "@types/node": "^20.12.11",
     "sqlite3": "^5.1.7",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
