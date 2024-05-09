@@ -11,7 +11,7 @@ export default function Products() {
       .then((response) => {
         console.log(response)
         const dataWithProductCount = response.data.map((reservation:Record<string, any>) => {
-          return {...reservation, product_count: reservation.products.length}
+          return {...reservation, product_count: reservation.products.length, expanded: false}
         })
 
         setData(dataWithProductCount);
@@ -30,11 +30,6 @@ export default function Products() {
       header: 'Number of Active Purchases',
       accessorKey: 'product_count',
     }
-
-    // {
-    //   header: 'Age',
-    //   accessorFn: (info: any) => info.age,
-    // },
   ]
 
   const table = useReactTable({ columns, data, getCoreRowModel: getCoreRowModel() })
@@ -45,6 +40,7 @@ export default function Products() {
         {table.getHeaderGroups().map(headerGroup => {
           return (
             <tr key={headerGroup.id}>
+              <th>Expand</th>
               {headerGroup.headers.map(header => {
                 return ( // map over the headerGroup headers array
                   <th key={header.id} colSpan={header.colSpan}>
@@ -61,12 +57,15 @@ export default function Products() {
           const values = row.original
 
         return (
-          <tr key={row.id}>
-            <td onClick={() => console.log(values)}>{values["product_count"] > 0 ? '+' : '-'} </td>
-            {row.getVisibleCells().map(cell => {
-              return <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
-            })}
-          </tr>
+          <div className="flex flex-col">
+            <tr key={row.id} className="flex">
+              <td onClick={() => console.log(values)}>{values["product_count"] > 0 ? '+' : '-'} </td>
+              {row.getVisibleCells().map(cell => {
+                return <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
+              })}
+            </tr>
+            <div className={`{}`}>toto</div>
+          </div>
         )})}
       </tbody>
     </table>
