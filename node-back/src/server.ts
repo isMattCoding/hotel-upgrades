@@ -18,12 +18,10 @@ server.get('/', (req: Request, res: Response) => {
     res.send('Welcome to the node app server!!!')
 });
 
-server.get('/product/:json/:limit', (req: Request, res: Response) => {
-  const { json, limit } = req.params;
-  const limitNumber = parseInt(limit, 10);
+server.get('/reservations', (req: Request, res: Response) => {
 
-  const filePath = path.join(public_files, `product_${json}.json`);
-   fs.readFile(filePath, 'utf8', (err, data) => {
+  const productAssignment = path.join(public_files, 'product_assignment.json');
+  fs.readFile(productAssignment, 'utf8', (err, data) => {
     if (err) {
       if (err.code === 'ENOENT') {
         return res.status(404).json({ error: 'File not found' });
@@ -31,61 +29,58 @@ server.get('/product/:json/:limit', (req: Request, res: Response) => {
       return res.status(500).json({ error: 'Internal server error' });
     }
 
-    let jsonData;
+    let productAssignmentJsonData;
     try {
-      jsonData = JSON.parse(data);
+      productAssignmentJsonData = JSON.parse(data);
     } catch (parseError) {
       return res.status(400).json({ error: 'Invalid JSON data' });
     }
-
-    const groupedProductsMap = {};
-
-    jsonData.forEach((item) => {
-      const { reservation_uuid, id, name } = item;
-      if (!groupedProductsMap[reservation_uuid]) {
-        groupedProductsMap[reservation_uuid] = {
-          reservation_uuid,
-          products: [],
-        };
+    const productCharges = path.join(public_files, 'product_charges.json');
+    fs.readFile(productCharges, 'utf8', (err, data) => {
+      if (err) {
+        if (err.code === 'ENOENT') {
+          return res.status(404).json({ error: 'File not found' });
+        }
+        return res.status(500).json({ error: 'Internal server error' });
       }
-      groupedProductsMap[reservation_uuid].products.push({ id, name });
-    });
 
-    // Convert the map to an array for the final output
-    const groupedProductsArray = Object.values(groupedProductsMap);
+      let productChargesJsonData;
+      try {
+        productChargesJsonData = JSON.parse(data);
+      } catch (parseError) {
+        return res.status(400).json({ error: 'Invalid JSON data' });
+      }
+      const groupedProductsMap = {};
 
-    res.json(groupedProductsArray);
+      productAssignmentJsonData.forEach((item) => {
+        const { reservation_uuid, id, name } = item;
+        if (!groupedProductsMap[reservation_uuid]) {
+          groupedProductsMap[reservation_uuid] = {
+            reservation_uuid,
+            products: [],
+          };
+        }
+        const productCharges = productChargesJsonData.find((product) => {
+            return product.special_product_assignment_id === id
+          })
+        const { active, amount } = productCharges ? productCharges : {active: null, amount: null};
+        groupedProductsMap[reservation_uuid].products.push({
+          id,
+          name,
+          active,
+          amount
+        });
+        groupedProductsMap[reservation_uuid].product_count = groupedProductsMap[reservation_uuid].products.filter((product) => product.active).length
+      });
+
+      const groupedProductsArray = Object.values(groupedProductsMap);
+
+      res.json(groupedProductsArray);
+
+    })
+
   });
 })
-
-// server.get('/product/charges/:limit', (req: Request, res: Response) => {
-//   const { json, limit } = req.params;
-//   const limitNumber = parseInt(limit, 10);
-
-//   const filePath = path.join(public_files, `product_${json}.json`);
-//    fs.readFile(filePath, 'utf8', (err, data) => {
-//     if (err) {
-//       if (err.code === 'ENOENT') {
-//         return res.status(404).json({ error: 'File not found' });
-//       }
-//       return res.status(500).json({ error: 'Internal server error' });
-//     }
-
-//     let jsonData;
-//     try {
-//       jsonData = JSON.parse(data);
-//     } catch (parseError) {
-//       return res.status(400).json({ error: 'Invalid JSON data' });
-//     }
-
-//     if (Array.isArray(jsonData)) {
-//       const limitedData = jsonData.slice(0, limitNumber);
-//       return res.json(limitedData);
-//     }
-
-//     res.status(400).json({ error: 'JSON data is not an array' });
-//   });
-// })
 
 server.use('/api', routes)
 

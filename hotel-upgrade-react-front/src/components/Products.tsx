@@ -1,17 +1,18 @@
 import { flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table"
 import axios from "axios";
+import React from "react";
 import { useEffect, useState } from "react"
+import ProductDetails from "./Products/ProductDetails";
 
 export default function Products() {
-  const [data, setData] = useState([])
+  const [data, setData] = useState<any>([])
 
   useEffect(() => {
     axios
-      .get('http://localhost:8000/product/assignment/100')
+      .get('http://localhost:8000/reservations')
       .then((response) => {
-        console.log(response)
         const dataWithProductCount = response.data.map((reservation:Record<string, any>) => {
-          return {...reservation, product_count: reservation.products.length, expanded: false}
+          return {...reservation, expanded: false}
         })
 
         setData(dataWithProductCount);
@@ -55,18 +56,17 @@ export default function Products() {
       <tbody>
         {table.getRowModel().rows.map(row => {
           const values = row.original
-
-        return (
-          <div className="flex flex-col">
-            <tr key={row.id} className="flex">
-              <td onClick={() => console.log(values)}>{values["product_count"] > 0 ? '+' : '-'} </td>
-              {row.getVisibleCells().map(cell => {
-                return <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
-              })}
-            </tr>
-            <div className={`{}`}>toto</div>
-          </div>
-        )})}
+          return (
+            <React.Fragment key={row.id}>
+              <tr className="">
+                {row.getVisibleCells().map(cell => {
+                  return <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
+                })}
+              </tr>
+              <ProductDetails reservation_uuid={values["reservation_uuid"] as string}/>
+            </React.Fragment>
+          )}
+        )}
       </tbody>
     </table>
   </>
