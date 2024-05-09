@@ -1,9 +1,13 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { findAllByText, fireEvent, render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('e2e test', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  const pElement = screen.getByText('Your management tool to maximise revenue')
+  expect(pElement).toBeInTheDocument();
+
+  const button = screen.getAllByText('Dashboard')[1]
+
+  fireEvent.click(button);
 });

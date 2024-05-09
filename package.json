@@ -8,6 +8,7 @@
     "start-node": "ts-node node-back/src/index.ts",
     "start-react-native": "cd hotel-upgrade-native-front && yarn start",
     "start-react": "cd hotel-upgrade-react-front && yarn start",
+    "test-react": "cd hotel-upgrade-react-front && yarn test",
     "migrate": "knex migrate:latest"
   },
   "keywords": [],

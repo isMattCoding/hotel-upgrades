@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders h1 element 1`] = `
+<div>
+  <div
+    class="w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700"
+  >
+    <div
+      class="flex items-center justify-between mb-4"
+    >
+      <h5
+        class="text-xl font-bold leading-none text-gray-900 dark:text-white"
+      >
+        Crown
+        , 
+        Melbourne
+      </h5>
+      <a
+        class="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500"
+        href="#"
+      >
+        View all
+      </a>
+    </div>
+    Loading...
+  </div>
+</div>
+`;
